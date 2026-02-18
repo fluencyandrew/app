@@ -6,9 +6,7 @@ import FreeTextExerciseCard from "@/components/FreeTextExerciseCard";
 import ProgressBar from "@/components/ProgressBar";
 import SensesDropdown from "@/components/SensesDropdown";
 import SparkAnimation from "@/components/SparkAnimation";
-import DebugPanel from "@/components/DebugPanel";
 import PointsCounter from "@/components/PointsCounter";
-import SpeakerInfo from "@/components/SpeakerInfo";
 import {
   exerciseSession,
   MultiChoiceExercise,
@@ -119,8 +117,6 @@ export default function Home() {
       ? "Face-to-Face"
       : "Conversation"
     : "";
-  const interlocutorRole = userContext?.interlocutor;
-  const userRole = userContext?.userRole;
   const userAvatar = userContext?.userAvatarUrl;
   const interlocutorAvatar = userContext?.interlocutorAvatarUrl;
 
