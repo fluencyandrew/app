@@ -1,0 +1,509 @@
+SYSTEM OVERVIEW
+
+The system develops productive lexical precision across three controlled cognitive stages:
+
+Noticing – Contrastive encoding + full-form embedding
+
+Retrieval – Cue-triggered override of placeholder
+
+Automation – Stable precision under pressure and interference
+
+Core Cognitive Assumptions
+
+The learner already possesses a fluent high-frequency placeholder (e.g., contact).
+
+Precision variants exist receptively but are not stably retrievable.
+
+Variants must be encoded as situationally indexed alternatives, not synonyms.
+
+Production emerges from repeated cue-triggered override cycles.
+
+Automation requires:
+
+Time pressure
+
+Hierarchical sensitivity
+
+Interruption
+
+Competing variables
+
+Lexical Cluster Structure
+
+Each cluster contains:
+
+1 Base Placeholder
+
+2–6 Precision Variants
+
+Each variant linked to a structured Pill
+
+Pill Architecture
+
+Each Pill encodes:
+
+Role hierarchy
+
+Speaker goal
+
+Interlocutor goal
+
+Participant structure
+
+Emotional temperature
+
+Temporal condition
+
+Communicative effect
+
+Status signal transmitted
+
+Pills are not definitions.
+They are situational activation signatures.
+
+STAGE 1 – NOTICING
+(Contrastive Encoding + Full-Form Embedding)
+Cognitive Objective
+
+Encode full physical form of the variant.
+
+Encode object placement / syntactic rhythm.
+
+Bind form to a visible pill cue.
+
+Establish contrast against fluent placeholder.
+
+No retrieval pressure.
+
+This stage is encoding, not performance.
+
+Stage 1 Structural Rules
+
+Exactly 2 answer options
+
+Both answers are fully grammatical, complete units
+
+If a variant requires object placement, the object must be embedded
+
+Placeholder must appear in its complete replaceable form
+
+The pill appears visibly inside the stimulus (boxed)
+
+A floating lexical menu is available at all times (Stage 1 only)
+
+The entire highlighted phrase is replaced — never a fragment
+
+No distractors.
+No semantic noise.
+No time pressure.
+
+Floating Pill–Sense Menu (Stage 1 Only)
+
+Persistent UI element.
+
+When the learner selects the correct answer:
+
+Selected answer animates.
+
+It visually merges with pill box.
+
+Floating lexical field expands.
+
+Variant is permanently indexed under its base placeholder.
+
+Example lexical field:
+
+CONTACT
+→ contact (Neutral Initiation)
+→ reach out to (Low-Pressure Relational Initiation)
+→ chase someone up (Delayed Response Recovery)
+→ consult (Expertise Validation)
+
+Menu disappears in Stage 2 and Stage 3.
+
+STAGE 1 – EXAMPLE 1
+CONTACT Cluster
+Base Placeholder
+
+contact – Neutral Initiation
+
+Variant
+
+reach out to – Low-Pressure Relational Initiation
+
+Role Frame
+
+User Role: Project Manager
+Goal: Reopen communication without urgency
+
+Interlocutor: External Consultant
+Goal: Maintain autonomy
+
+Background:
+Email sent last month. Non-urgent matter.
+
+Visible Pill
+
+🟦 Low-Pressure Relational Initiation
+
+Prompt
+
+You are drafting an email:
+
+“I’d like to ______ regarding the earlier proposal.”
+
+Answer Choices (Full Replacement Units)
+
+A) contact you
+B) reach out to you
+
+Correct: B
+
+Feedback Logic
+
+If B →
+Consultant: “Thanks for reaching out — happy to revisit this.”
+Goal alignment: ✅
+Status signal: Non-imposing
+
+If A →
+Consultant: “Understood. Is this time-sensitive?”
+Goal alignment: ?
+Status signal: Slight urgency projection
+
+Stage 1 Explanation focuses only on:
+
+Strategic signal transmitted
+
+Pill variable activated
+
+Why the alternative shifts tone
+
+Never grammar.
+
+STAGE 1 – EXAMPLE 2
+Object Placement Encoding
+
+Cluster: CONTACT
+Variant: chase someone up – Delayed Response Recovery
+
+Background
+
+Two emails sent. No reply. Deadline tomorrow.
+
+Visible Pill
+
+🟦 Delayed Response Recovery
+
+Prompt
+
+You now need to ______.
+
+Answer Choices
+
+A) chase them up
+B) contact them
+
+Correct: A
+
+Key Encoding Target:
+
+Full phrasal unit
+
+Object embedded
+
+Rhythm: “chase THEM up”
+
+Entire highlighted phrase replaced
+
+This prevents fragment-level encoding.
+
+STAGE 1 – Exercise Type 2
+Constraint Embedding
+
+Purpose: Encode structural constraints beyond surface collocation.
+
+Focus:
+
+Participant structure
+
+Thematic roles
+
+Power symmetry
+
+Interaction directionality
+
+Example – Participant Constraint
+
+Base Placeholder: meet
+Variant: come across
+
+Constraint:
+
+meet requires mutual participation
+
+come across allows unilateral discovery
+
+Prompt:
+
+“Have you ever ______ this kind of cat?”
+
+A) met
+B) come across
+
+Correct: B
+
+Because the cat is not engaged in reciprocal interaction.
+
+This encodes participant structure constraint.
+
+Example – Hierarchical Softening
+
+“Hello, I’m ______ to enquire about collaboration.”
+
+A) contacting you
+B) reaching out to you
+
+Correct: B
+
+Encodes:
+
+Emotional temperature
+
+Hierarchical sensitivity
+
+Relational positioning
+
+STAGE 2 – RETRIEVAL
+(Cue-Triggered Override)
+
+Now scaffolding disappears.
+
+Cognitive Objective
+
+Remove visible pill
+
+Remove floating menu
+
+Force recall through embedded cue
+
+Introduce distractor
+
+Strengthen override reflex
+
+Stage 2 Structural Rules
+
+3 answer options
+
+1 unrelated distractor
+
+Placeholder visible and must be actively overridden
+
+No pill box
+
+No lexical menu
+
+Moderate cognitive load
+
+STAGE 2 – EXAMPLE 1
+Override With Embedded Cue
+
+User Role: Operations Lead
+Background: Two emails. No reply. Deadline imminent.
+
+Sentence Displayed:
+
+“I’ll contact them again tomorrow.”
+
+Instruction:
+Keep or replace the highlighted phrase.
+
+Answer Choices (Full Units)
+
+A) contact them
+B) chase them up
+C) consult them
+
+Correct: B
+
+Cue variables:
+
+Delayed response
+
+Urgency
+
+Accountability pressure
+
+Feedback
+
+If B →
+Finance: “Apologies — we’ll prioritise this.”
+Goal: ✅
+
+If A →
+Finance: “Noted.”
+Goal: ?
+
+If C →
+Finance: “That’s not the issue.”
+Goal: ❌
+
+Diagnostic explanation:
+Which variable triggered correct override.
+
+STAGE 2 – Constraint Retrieval
+
+Director: “Are you confident in the modelling assumptions?”
+
+You:
+“I’ll ______ the data science team before finalising.”
+
+A) contact
+B) consult
+C) reach out to
+
+Correct: B
+
+Cue:
+
+Expertise validation
+
+Authority acknowledgment
+
+Non-neutral consultation requirement
+
+Learner must recall variant without pill support.
+
+STAGE 3 – AUTOMATION
+(Stability Under Pressure)
+
+No visible placeholder.
+No lexical support.
+No menu.
+Timed response.
+Dynamic dialogue.
+
+Cognitive Objective
+
+Ensure precision survives:
+
+Time pressure
+
+Hierarchical tension
+
+Interruption
+
+Competing pill variables
+
+STAGE 3 – Example 1
+Timed Production
+
+Prompt (5 seconds):
+
+Investor waiting. Two weeks silence. Respond.
+
+Learner must produce:
+
+“I just wanted to chase up the proposal we discussed.”
+
+System Reaction
+
+If precision used →
+Investor: “Thanks — let’s review tomorrow.”
+✅
+
+If placeholder used →
+Investor: “Yes?”
+?
+
+If wrong sense →
+Investor: “That’s not the issue.”
+❌
+
+No multiple choice.
+Full phrase must be generated.
+
+STAGE 3 – Multi-Pill Competition
+
+Scenario:
+
+You require:
+
+Technical clarification
+
+Response after delay
+
+Hierarchical sensitivity
+
+Available lexical field (internally known to learner):
+contact
+consult
+chase up
+reach out to
+
+Correct choice depends on:
+
+Which variable dominates
+
+Which signal is strategically prioritised
+
+This forces:
+
+Variable ranking
+
+Executive-level decision control
+
+Strategic communicative framing
+
+Feedback Architecture (All Stages)
+
+Every response triggers:
+
+Interlocutor reaction
+
+Goal alignment indicator (✅ / ? / ❌)
+
+Diagnostic explanation including:
+
+Which pill variable was activated
+
+Which variable was ignored
+
+What strategic signal was transmitted
+
+Authority / status implications
+
+Feedback never references grammar.
+
+Only:
+
+Communicative effect
+
+Strategic positioning
+
+Perceived authority
+
+Structural Summary
+Stage	Cognitive Focus	Options	Distractor	Pill Visible	Menu	Pressure
+1	Contrast Encoding	2	No	Yes	Yes	None
+2	Cue Override	3	1	No	No	Moderate
+3	Automation	Open	Implicit	No	No	High
+Core Design Principles (Refined)
+
+Placeholder remains usable — never framed as “wrong.”
+
+Precision always maps to scenario-linked variable.
+
+Stage 1 encodes physical form + pill binding.
+
+Stage 2 strengthens override reflex.
+
+Stage 3 trains stability under stress.
+
+Constraint Embedding replaces surface collocation testing.
+
+All answer options are full replaceable units.
+
+Role/interlocutor logic persists across stages.
+
+Every lexical field broadens from the learner’s existing 5000-word base toward controlled precision expansion.

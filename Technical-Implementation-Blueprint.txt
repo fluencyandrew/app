@@ -1,0 +1,453 @@
+1. SYSTEM ARCHITECTURE OVERVIEW
+
+Architecture Type: Modular SaaS
+
+Recommended Stack (MVP):
+
+Frontend:
+
+Next.js (App Router)
+
+React
+
+Tailwind
+
+Backend:
+
+Supabase (Postgres + Auth + RLS)
+OR
+
+Node + Express + Postgres
+
+State Management:
+
+Zustand or Redux (stage engine state)
+
+2. CORE DOMAIN MODEL
+
+Your system revolves around:
+
+Clusters
+
+Senses (placeholder + variants)
+
+Pills (situational activation signatures)
+
+Exercises
+
+Attempts
+
+Integration tracking
+
+3. DATABASE SCHEMA
+
+Use relational schema (Postgres).
+
+3.1 users
+users
+------
+id (uuid, pk)
+email
+created_at
+role_profile (enum: corporate, academic, founder, etc.)
+
+3.2 clusters
+
+Represents lexical fields (e.g., CONTACT cluster).
+
+clusters
+--------
+id (uuid, pk)
+name (e.g., "CONTACT")
+description
+base_placeholder_sense_id (fk -> senses.id)
+created_at
+
+3.3 senses
+
+Represents placeholder + variants.
+
+senses
+------
+id (uuid, pk)
+cluster_id (fk -> clusters.id)
+base_word (string)            // e.g., contact
+full_form_template (string)   // e.g., "contact {object}"
+is_placeholder (boolean)
+requires_object (boolean)
+rhythmic_pattern (string)     // e.g., "chase THEM up"
+difficulty_level (int)
+
+
+Example:
+
+contact
+
+reach out to
+
+chase someone up
+
+consult
+
+3.4 pills
+
+Each sense maps to exactly one pill.
+
+pills
+-----
+id (uuid, pk)
+sense_id (fk -> senses.id)
+role_hierarchy (jsonb)
+speaker_goal (text)
+interlocutor_goal (text)
+participant_structure (text)
+emotional_temperature (enum: neutral, softened, urgent)
+temporal_condition (enum: neutral, delayed_response, preemptive)
+communicative_effect (text)
+status_signal (text)
+
+
+This allows future multi-variable matching.
+
+3.5 exercises
+
+Exercises are stage-specific instances.
+
+exercises
+---------
+id (uuid, pk)
+cluster_id (fk)
+stage (enum: 1,2,3)
+exercise_type (enum: contrast, constraint, override, production)
+prompt_text (text)
+background_context (text)
+user_role (text)
+interlocutor_role (text)
+visible_pill_id (nullable fk -> pills.id)
+timer_seconds (nullable int)
+created_at
+
+3.6 exercise_options
+
+Stage 1 & 2 multiple choice options.
+
+exercise_options
+----------------
+id (uuid, pk)
+exercise_id (fk)
+sense_id (fk -> senses.id)
+display_text (text) // full replacement unit
+is_correct (boolean)
+is_distractor (boolean)
+
+
+Stage 3 has no options.
+
+3.7 attempts
+
+Each user interaction.
+
+attempts
+--------
+id (uuid, pk)
+user_id (fk)
+exercise_id (fk)
+selected_sense_id (nullable)
+typed_response (nullable text)
+response_time_ms (int)
+is_correct (boolean)
+goal_alignment (enum: success, partial, fail)
+created_at
+
+4. INTEGRATION TRACKING (12 ENCOUNTER RULE)
+
+You proposed:
+
+12 successful encounters of sense-structure mapped to pill = neural integration
+
+This must be stored per user per sense.
+
+4.1 user_sense_progress
+user_sense_progress
+-------------------
+id (uuid, pk)
+user_id (fk)
+sense_id (fk)
+stage1_encounters (int default 0)
+stage2_overrides (int default 0)
+stage3_successes (int default 0)
+total_weighted_score (float default 0)
+integration_status (enum: encoding, consolidating, integrated)
+last_encounter_at (timestamp)
+
+Integration Logic
+
+Define weighted scoring:
+
+Stage 1 correct = +1
+Stage 2 correct override = +2
+Stage 3 correct production under time = +3
+
+Integration threshold:
+
+IF total_weighted_score >= 12
+THEN integration_status = "integrated"
+
+
+OR
+
+Require:
+
+=3 Stage 2 successes
+
+=2 Stage 3 successes
+
+total >=12
+
+This prevents Stage 1-only gaming.
+
+5. FLOATING LEXICAL MENU ENGINE
+
+Stage 1 only.
+
+Menu content:
+
+Query:
+
+SELECT senses.*, user_sense_progress.integration_status
+FROM senses
+LEFT JOIN user_sense_progress
+ON senses.id = user_sense_progress.sense_id
+WHERE cluster_id = ?
+
+
+Display logic:
+
+Greyed out → not yet encountered
+
+Highlighted → encoded
+
+Solid → integrated
+
+Menu disappears automatically if:
+
+current_stage > 1
+
+6. STAGE ENGINE LOGIC
+6.1 Stage 1 Engine
+
+Rules:
+
+2 options only
+
+No distractor
+
+Visible pill required
+
+On correct answer:
+
+increment stage1_encounters
+
++1 score
+
+animate merge pill
+
+update lexical menu state
+
+6.2 Stage 2 Engine
+
+Rules:
+
+3 options
+
+1 distractor required
+
+Placeholder must be present as option
+
+Override detection:
+
+IF selected_sense_id != placeholder_sense_id
+AND is_correct = true
+THEN increment stage2_overrides
+
+
+Scoring:
++2 for correct override
+
+6.3 Stage 3 Engine
+
+Free text input.
+
+Timer logic:
+
+Start timer on render
+
+Capture submission time
+
+If time > timer_seconds → partial credit
+
+Evaluation:
+
+For MVP:
+
+Exact match OR
+
+Regex pattern match for target phrase
+
+Example:
+
+/chase\s+(it|them|the proposal)\s+up/i
+
+
+Scoring:
++3 if:
+
+Correct sense detected
+
+Within time window
+
+7. EXERCISE RETRIEVAL LOGIC
+Cluster Session Generation
+
+Algorithm:
+
+Select cluster
+
+Fetch user_sense_progress
+
+Identify weakest senses (lowest weighted score)
+
+Prioritise those in:
+
+Stage 1 if new
+
+Stage 2 if encoded but <6 score
+
+Stage 3 if >=6 but <12
+
+Pseudo:
+
+IF integration_status = encoding
+→ Stage 1 exercise
+
+ELSE IF total_weighted_score < 6
+→ Stage 2
+
+ELSE
+→ Stage 3
+
+8. DASHBOARD DATA MODEL
+
+Dashboard shows:
+
+Per cluster:
+
+% senses integrated
+
+Override rate
+
+Avg Stage 3 latency
+
+Query example:
+
+SELECT
+  COUNT(CASE WHEN integration_status='integrated' THEN 1 END) /
+  COUNT(*) as integration_ratio
+FROM user_sense_progress
+WHERE user_id = ?
+
+
+Metrics displayed:
+
+Precision Control %
+
+Override Reflex %
+
+Pressure Stability Score
+
+9. STATE MACHINE (CRITICAL)
+
+Each sense has user-state:
+
+ENCODING → CONSOLIDATING → INTEGRATED
+
+
+Transitions:
+
+ENCODING:
+
+3 Stage 1 successes → CONSOLIDATING
+
+CONSOLIDATING:
+
+=6 weighted score + >=2 Stage 2 overrides → STAGE 3 unlocked
+
+INTEGRATED:
+
+=12 weighted score + >=2 Stage 3 successes
+
+10. CONTENT AUTHORING FORMAT (FOR SCALABILITY)
+
+Define JSON import format:
+
+{
+  "cluster": "CONTACT",
+  "base_placeholder": "contact",
+  "variants": [
+    {
+      "full_form": "reach out to {object}",
+      "pill": {
+        "emotional_temperature": "softened",
+        "temporal_condition": "neutral",
+        "status_signal": "non-imposing"
+      }
+    }
+  ]
+}
+
+
+This allows AI-assisted content creation.
+
+11. FUTURE (NOT MVP)
+
+AI semantic evaluation for Stage 3
+
+Adaptive difficulty based on response latency
+
+Cross-cluster pill conflict training
+
+Pill-variable heatmap analytics
+
+12. WHAT YOU BUILD FIRST
+
+Minimum viable build order:
+
+Database schema
+
+Stage 1 engine
+
+user_sense_progress tracking
+
+Stage 2 override logic
+
+Basic Stage 3 regex evaluator
+
+Dashboard integration % display
+
+13. CRITICAL DESIGN PRINCIPLE
+
+This is not a vocabulary app.
+
+It is a:
+
+Precision Activation Tracking System.
+
+Your differentiation lives in:
+
+Pill architecture
+
+Override tracking
+
+Integration threshold logic
+
+Stage-based state progression
