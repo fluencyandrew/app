@@ -185,33 +185,9 @@ export default function ExerciseCard({
           medium === "faceToFace" ? "space-x-6" : ""
         }`}
         >
-          {/* interlocutor avatar */}
-          <div className="flex-shrink-0">
-            {interlocutorAvatarUrl ? (
-              <img
-                src={interlocutorAvatarUrl}
-                alt="interlocutor"
-                className={`${
-                  medium === "faceToFace" ? "w-16 h-16" : "w-12 h-12"
-                } rounded-full object-cover`}
-              />
-            ) : (
-              <div
-                className={`${
-                  medium === "faceToFace" ? "w-16 h-16" : "w-12 h-12"
-                } bg-gray-300 rounded-full`} />
-            )}
-          </div>
           <div
             className="flex-1 p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-white/30 shadow-md float-effect"
           >
-            {/* optional email-style header */}
-            {medium === "email" && (
-              <div className="mb-2 text-xs text-gray-500">
-                <div>From: {exercise.context.interlocutor}</div>
-                <div>To: You</div>
-              </div>
-            )}
             <p className="text-base text-gray-800 leading-relaxed text-left">
               {exercise.context.initialDialogue.split(new RegExp(`(${highlightPhrase.text})`, "gi")).map((part, idx) =>
                 part.toLowerCase() === highlightPhrase.text.toLowerCase() ? (
@@ -236,62 +212,7 @@ export default function ExerciseCard({
         </div>
       )}
 
-      {/* Scenario container styled as a chat bubble - Only show if no initial dialogue */}
-      {stage === 1 && !exercise.context.initialDialogue && (
-        <div className={`flex items-start space-x-4 ${
-          medium === "faceToFace" ? "space-x-6" : ""
-        }`}
-        >
-          {/* interlocutor avatar */}
-          <div className="flex-shrink-0">
-            {interlocutorAvatarUrl ? (
-              <img
-                src={interlocutorAvatarUrl}
-                alt="interlocutor"
-                className={`${
-                  medium === "faceToFace" ? "w-16 h-16" : "w-12 h-12"
-                } rounded-full object-cover`}
-              />
-            ) : (
-              <div
-                className={`${
-                  medium === "faceToFace" ? "w-16 h-16" : "w-12 h-12"
-                } bg-gray-300 rounded-full`} />
-            )}
-          </div>
-          <div
-            className="flex-1 p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-white/30 shadow-md float-effect"
-          >
-            {/* optional email-style header */}
-            {medium === "email" && (
-              <div className="mb-2 text-xs text-gray-500">
-                <div>From: {exercise.context.interlocutor}</div>
-                <div>To: You</div>
-              </div>
-            )}
-            <p className="text-base text-gray-800 leading-relaxed text-left">
-              {exercise.scenario.split(new RegExp(`(${highlightPhrase.text})`, "gi")).map((part, idx) =>
-                part.toLowerCase() === highlightPhrase.text.toLowerCase() ? (
-                  <span
-                    key={idx}
-                    className={`font-semibold px-2 py-1 rounded transition-all duration-300 ${
-                      highlightPhrase.type === "correct"
-                        ? "bg-green-300 text-green-900 glow-blue"
-                        : highlightPhrase.type === "incorrect"
-                        ? "bg-red-300 text-red-900"
-                        : ""
-                    }`}
-                  >
-                    {part}
-                  </span>
-                ) : (
-                  part
-                )
-              )}
-            </p>
-          </div>
-        </div>
-      )}
+
 
       {/* Exercise Card */}
       <div className="space-y-6">
@@ -311,54 +232,38 @@ export default function ExerciseCard({
         )}
 
         {/* Reply section (user side) - with send button inline */}
-        <div className="flex items-start space-x-4">
-          <div className="flex-1">
-            <div className="p-6 bg-white/50 backdrop-blur-sm rounded-xl border border-white/30 shadow-sm">
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <p className="text-lg text-gray-900 leading-relaxed font-medium">
-                    {exercise.prompt.split("______").map((part, idx, arr) => (
-                      <span key={idx}>
-                        {part}
-                        {idx < arr.length - 1 && (
-                          <span className="px-3 py-1 mx-1 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 rounded-lg font-bold border border-blue-300">
-                            {displayedPhrase}
-                          </span>
-                        )}
+        <div className={`flex items-start space-x-4 ${
+          medium === "faceToFace" ? "space-x-6" : ""
+        } justify-end`}>
+          <div className="flex-1 max-w-md">
+            <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600 backdrop-blur-sm rounded-xl rounded-tr-none border border-blue-400 shadow-md float-effect">
+              <p className="text-base text-white leading-relaxed font-medium">
+                {exercise.prompt.split("______").map((part, idx, arr) => (
+                  <span key={idx}>
+                    {part}
+                    {idx < arr.length - 1 && (
+                      <span className="px-2 py-1 mx-1 bg-white/30 text-white rounded font-bold border border-white/50">
+                        {displayedPhrase}
                       </span>
-                    ))}
-                  </p>
-                </div>
-                <button
-                  onClick={handleSend}
-                  disabled={sent}
-                  className={`px-6 py-2 rounded-lg transition-all font-semibold shadow-md flex-shrink-0 ${
-                    sent
-                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                      : isCorrectSelection
-                      ? "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white hover:shadow-lg"
-                      : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white hover:shadow-lg"
-                  }`}
-                >
-                  {sent ? "Sent" : "Send"}
-                </button>
-              </div>
+                    )}
+                  </span>
+                ))}
+              </p>
             </div>
-          </div>
-          <div className="flex-shrink-0">
-            {userAvatarUrl ? (
-              <img
-                src={userAvatarUrl}
-                alt="you"
-                className={`${
-                  medium === "faceToFace" ? "w-16 h-16" : "w-12 h-12"
-                } rounded-full object-cover`}
-              />
-            ) : (
-              <div
-                className={`${
-                  medium === "faceToFace" ? "w-16 h-16" : "w-12 h-12"
-                } bg-gray-300 rounded-full`} />
+            {!sent && (
+              <button
+                onClick={handleSend}
+                disabled={sent}
+                className={`mt-3 w-full px-4 py-2 rounded-lg transition-all font-semibold shadow-md ${
+                  sent
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : isCorrectSelection
+                    ? "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white hover:shadow-lg"
+                    : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white hover:shadow-lg"
+                }`}
+              >
+                {sent ? "Sent" : "Send"}
+              </button>
             )}
           </div>
         </div>
@@ -386,37 +291,50 @@ export default function ExerciseCard({
           ))}
         </div>
 
-        {/* Feedback */}
-        {feedback.type && (
-          <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl shadow-md">
-            <p className="text-sm text-blue-900 italic mb-3 leading-relaxed">
-              "{feedback.interlocutorReaction}"
-            </p>
-            <div
-              className={`p-4 rounded-lg border-2 ${
-                feedback.type === "correct"
-                  ? "bg-green-100 border-green-400"
-                  : "bg-amber-100 border-amber-400"
-              }`}
-            >
-              <p
-                className={`font-semibold mb-2 ${
+        {/* Feedback - Only show after sent */}
+        {sent && feedback.type && (
+          <div>
+            {/* Interlocutor's reaction as dialogue box */}
+            <div className={`flex items-start space-x-4 ${
+              medium === "faceToFace" ? "space-x-6" : ""
+            }`}>
+              <div className="flex-1 max-w-md">
+                <div className="p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-white/30 shadow-md float-effect">
+                  <p className="text-base text-gray-800 leading-relaxed font-medium italic">
+                    "{feedback.interlocutorReaction}"
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Alignment and Signal feedback */}
+            <div className="mt-4 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl shadow-md">
+              <div
+                className={`p-4 rounded-lg border-2 ${
                   feedback.type === "correct"
-                    ? "text-green-900"
-                    : "text-amber-900"
+                    ? "bg-green-100 border-green-400"
+                    : "bg-amber-100 border-amber-400"
                 }`}
               >
-                {feedback.alignment}
-              </p>
-              <p
-                className={
-                  feedback.type === "correct"
-                    ? "text-green-800"
-                    : "text-amber-800"
-                }
-              >
-                {feedback.signal}
-              </p>
+                <p
+                  className={`font-semibold mb-2 ${
+                    feedback.type === "correct"
+                      ? "text-green-900"
+                      : "text-amber-900"
+                  }`}
+                >
+                  {feedback.alignment}
+                </p>
+                <p
+                  className={
+                    feedback.type === "correct"
+                      ? "text-green-800"
+                      : "text-amber-800"
+                  }
+                >
+                  {feedback.signal}
+                </p>
+              </div>
             </div>
           </div>
         )}

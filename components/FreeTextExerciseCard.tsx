@@ -44,13 +44,15 @@ export default function FreeTextExerciseCard({
 
   return (
     <div className="w-full space-y-6">
-      {/* Situation Description - At the top */}
-      <div className="text-left">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Situation</h3>
-        <p className="text-base text-gray-800 leading-relaxed text-left">
-          {exercise.prompt}
-        </p>
-      </div>
+      {/* Situation Description - Only show if NO initial dialogue */}
+      {!exercise.context?.initialDialogue && (
+        <div className="text-left">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Situation</h3>
+          <p className="text-base text-gray-800 leading-relaxed text-left">
+            {exercise.prompt}
+          </p>
+        </div>
+      )}
 
       {/* User Avatar and Roles - Below situation */}
       {exercise.context && (
@@ -94,18 +96,6 @@ export default function FreeTextExerciseCard({
       {/* Initial Dialogue from Interlocutor */}
       {exercise.context?.initialDialogue && (
         <div className={`flex items-start space-x-4`}>
-          {/* interlocutor avatar */}
-          <div className="flex-shrink-0">
-            {exercise.context.interlocutorAvatarUrl ? (
-              <img
-                src={exercise.context.interlocutorAvatarUrl}
-                alt="interlocutor"
-                className="w-12 h-12 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-12 h-12 bg-gray-300 rounded-full" />
-            )}
-          </div>
           <div
             className="flex-1 p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-white/30 shadow-md float-effect"
           >
@@ -128,22 +118,37 @@ export default function FreeTextExerciseCard({
         </span>
       </div>
 
-      {/* Text Input */}
-      <div>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          disabled={submitted}
-          placeholder="Type your response..."
-          className={`w-full p-4 rounded-lg border-2 bg-white text-gray-900 placeholder-gray-400 transition-all font-medium ${
-            submitted
-              ? isCorrect
-                ? "border-green-400 bg-green-50"
-                : "border-red-400 bg-red-50"
-              : "border-gray-300 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-          }`}
-          rows={5}
-        />
+      {/* User's Text Input - Displayed as dialogue bubble */}
+      <div className="flex items-end justify-end space-x-4 space-x-reverse">
+        <div className="flex-1 max-w-md">
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            disabled={submitted}
+            placeholder="Type your response..."
+            className={`w-full p-4 rounded-lg rounded-tr-none border-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white placeholder-blue-200 transition-all font-medium shadow-md ${
+              submitted
+                ? isCorrect
+                  ? "border-green-400"
+                  : "border-red-400"
+                : "border-blue-400 focus:border-blue-300 focus:ring-2 focus:ring-blue-300"
+            }`}
+            rows={5}
+          />
+          {!submitted && (
+            <button
+              onClick={handleSubmit}
+              disabled={!text.trim() || isTimeUp}
+              className={`mt-3 w-full py-3 px-4 rounded-lg transition-all font-semibold shadow-md ${
+                text.trim() && !isTimeUp
+                  ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white hover:shadow-lg"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              {isTimeUp ? "Time up" : "Submit"}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Feedback */}
@@ -172,21 +177,6 @@ export default function FreeTextExerciseCard({
               : `Response must include: ${exercise.requiredWords.join(", ")}`}
           </p>
         </div>
-      )}
-
-      {/* Submit Button (only visible if not submitted) */}
-      {!submitted && (
-        <button
-          onClick={handleSubmit}
-          disabled={!text.trim() || isTimeUp}
-          className={`w-full py-3 px-4 rounded-lg transition-all font-semibold shadow-md ${
-            text.trim() && !isTimeUp
-              ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white hover:shadow-lg"
-              : "bg-gray-300 text-gray-500 cursor-not-allowed"
-          }`}
-        >
-          {isTimeUp ? "Time up" : "Submit"}
-        </button>
       )}
 
       {/* Continue Button (only visible if submitted and correct) */}
