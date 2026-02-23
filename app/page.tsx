@@ -24,6 +24,12 @@ export default function Home() {
   const [currentSensePill, setCurrentSensePill] = useState<typeof contactSenses["reach-out"] | null>(
     null
   );
+  const [integrationTracker, setIntegrationTracker] = useState<Record<string, number>>({
+    "reach-out": 0,
+    "chase-up": 0,
+    contact: 0,
+    consult: 0,
+  });
   const [points, setPoints] = useState(0);
   const [mounted, setMounted] = useState(false);
 
@@ -69,6 +75,12 @@ export default function Home() {
   // Check if all stages are complete
   const isComplete = stageIndex >= exerciseSession.stages.length;
 
+  // Derive target sense from current exercise (for Dropdown learning display)
+  const targetSenseId = 
+    currentExercise?.type === "multiChoice" 
+      ? (currentExercise as MultiChoiceExercise).senseId
+      : undefined;
+
   const handlePointsChange = (delta: number) => {
     setPoints(prev => prev + delta);
   };
@@ -78,6 +90,12 @@ export default function Home() {
     if (stageNum === 1 && senseId && contactSenses[senseId]) {
       setUnlockedSenses((prev) => new Set([...prev, senseId]));
       setCurrentSensePill(contactSenses[senseId]);
+      
+      // Increment integration tracker (cap at 12)
+      setIntegrationTracker((prev) => ({
+        ...prev,
+        [senseId]: Math.min((prev[senseId] || 0) + 1, 12),
+      }));
     }
   };
 
@@ -204,8 +222,15 @@ export default function Home() {
         <p>Precision Language Training • Draft 1</p>
       </div>
 
-      {/* Senses Dropdown - Only show on Stage 1 */}
-      {!isComplete && stageNum === 1 && <SensesDropdown sensePill={currentSensePill} unlockedSenses={unlockedSenses} />}
+      {/* Senses Dropdown - Show throughout Stage 1 with integration tracking */}
+      {!isComplete && stageNum === 1 && (
+        <SensesDropdown 
+          sensePill={currentSensePill} 
+          unlockedSenses={unlockedSenses}
+          targetSenseId={targetSenseId}
+          integrationTracker={integrationTracker}
+        />
+      )}
     </main>
   );
 }
