@@ -134,10 +134,10 @@ export default function ExerciseCard({
 
   return (
     <div className="w-full space-y-6">
-      {/* Situation Description - At the top */}
-      <div className="text-left">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Situation</h3>
-        <p className="text-base text-gray-800 leading-relaxed text-left">
+      {/* Situation Description - Improved visual hierarchy */}
+      <div className="text-left bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-2 border-blue-200">
+        <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">Situation</h3>
+        <p className="text-lg text-gray-900 leading-relaxed font-medium">
           {exercise.scenario}
         </p>
       </div>
@@ -149,7 +149,7 @@ export default function ExerciseCard({
           {interlocutorAvatarUrl ? (
             <img
               src={interlocutorAvatarUrl}
-              alt="interlocutor"
+              alt={`${exercise.context.interlocutor} avatar`}
               className="w-12 h-12 rounded-full object-cover"
             />
           ) : (
@@ -170,7 +170,7 @@ export default function ExerciseCard({
           {userAvatarUrl ? (
             <img
               src={userAvatarUrl}
-              alt="you"
+              alt={`${exercise.context.userRole || "You"} avatar`}
               className="w-12 h-12 rounded-full object-cover"
             />
           ) : (
@@ -219,15 +219,18 @@ export default function ExerciseCard({
         {/* Pill - appears when option selected - In a box */}
         {stage === 1 && showPill && exercise.pill && (
           <div ref={pillRef} className="inline-block">
-            <span
-              className={`inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-blue-50 text-sm font-bold text-blue-700 rounded-lg border-2 border-blue-400 transition-all animate-fade-in ${
+            <div
+              className={`inline-block px-5 py-3 bg-gradient-to-r from-amber-100 to-amber-50 text-sm font-bold text-amber-800 rounded-lg border-2 border-amber-400 transition-all animate-fade-in ${
                 showMergeAnimation
                   ? "pill-merge scale-110 shadow-lg"
                   : "shadow-md"
               }`}
+              role="article"
+              aria-label="Activated pill: situational feature"
             >
+              <span className="text-xs text-amber-600 block mb-1">Pill Activated:</span>
               {exercise.pill}
-            </span>
+            </div>
           </div>
         )}
 
@@ -268,27 +271,42 @@ export default function ExerciseCard({
           </div>
         </div>
 
-        {/* Option Phrases - Interactive items to switch into placeholder */}
-        <div className="space-y-3">
-          <p className="text-xs text-gray-600 font-semibold">Choose an option to replace the placeholder:</p>
-          {alternates.map((phrase) => (
-            <button
-              key={phrase}
-              onClick={() => handleOptionClick(phrase)}
-              disabled={sent}
-              className={`w-full p-3 text-left rounded-lg border-2 transition-all font-medium text-sm shadow-sm ${
-                currentSelection === phrase
-                  ? phrase === exercise.correct
-                    ? "bg-green-100 border-green-400 text-green-900 shadow-md"
-                    : "bg-red-100 border-red-400 text-red-900 shadow-md"
-                  : sent
-                  ? "bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-white border-gray-300 text-gray-800 hover:border-gray-400 hover:shadow-md cursor-pointer"
-              }`}
-            >
-              {phrase}
-            </button>
-          ))}
+        {/* Option Phrases - Enhanced UI with clearer affordance */}
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide mb-3">→ Choose an option:</p>
+            <div className="grid gap-3" role="group" aria-label="Exercise options">
+              {alternates.map((phrase, idx) => (
+                <button
+                  key={phrase}
+                  onClick={() => handleOptionClick(phrase)}
+                  disabled={sent}
+                  aria-pressed={currentSelection === phrase}
+                  aria-label={`Option ${idx + 1}: ${phrase}`}
+                  className={`w-full p-4 text-left rounded-lg border-2 transition-all font-medium text-base shadow-sm hover:shadow-md ${
+                    currentSelection === phrase
+                      ? phrase === exercise.correct
+                        ? "bg-green-50 border-green-400 text-green-900 shadow-md ring-2 ring-green-300"
+                        : "bg-red-50 border-red-400 text-red-900 shadow-md ring-2 ring-red-300"
+                      : sent
+                      ? "bg-gray-50 border-gray-300 text-gray-400 cursor-not-allowed opacity-60"
+                      : "bg-white border-gray-300 text-gray-800 hover:border-blue-400 hover:bg-blue-50 cursor-pointer"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span>"{phrase}"</span>
+                    {currentSelection === phrase && (
+                      <span className={`text-lg ${
+                        phrase === exercise.correct ? "text-green-600" : "text-red-600"
+                      }`}>
+                        {phrase === exercise.correct ? "✓" : "✗"}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Feedback - Only show after sent */}
@@ -307,33 +325,20 @@ export default function ExerciseCard({
               </div>
             </div>
 
-            {/* Alignment and Signal feedback */}
-            <div className="mt-4 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl shadow-md">
-              <div
-                className={`p-4 rounded-lg border-2 ${
-                  feedback.type === "correct"
-                    ? "bg-green-100 border-green-400"
-                    : "bg-amber-100 border-amber-400"
-                }`}
-              >
-                <p
-                  className={`font-semibold mb-2 ${
-                    feedback.type === "correct"
-                      ? "text-green-900"
-                      : "text-amber-900"
-                  }`}
-                >
-                  {feedback.alignment}
-                </p>
-                <p
-                  className={
-                    feedback.type === "correct"
-                      ? "text-green-800"
-                      : "text-amber-800"
-                  }
-                >
-                  {feedback.signal}
-                </p>
+            {/* Semantic Explanation with better visual structure */}
+            <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl shadow-md space-y-3">
+              <div className={`flex items-center gap-2 font-semibold ${
+                feedback.type === "correct" ? "text-green-700" : "text-amber-700"
+              }`}>
+                <span className="text-xl">{feedback.type === "correct" ? "✓ Correct" : "⚠ Not quite"}</span>
+              </div>
+              <div className="bg-white/70 p-3 rounded-lg border-l-4 border-blue-400">
+                <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide">Goal Alignment</p>
+                <p className="text-sm font-medium text-gray-800 mt-1">{feedback.alignment}</p>
+              </div>
+              <div className="bg-white/70 p-3 rounded-lg border-l-4 border-amber-400">
+                <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide">Signal Transmitted</p>
+                <p className="text-sm font-medium text-gray-800 mt-1">{feedback.signal}</p>
               </div>
             </div>
           </div>
