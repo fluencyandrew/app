@@ -1,0 +1,111 @@
+{
+  "cluster": {
+    "id": "cluster_contact_01",
+    "name": "CONTACT",
+    "description": "Initiating and continuing professional communication"
+  },
+  "senses": [
+    {
+      "id": "sense_contact",
+      "base_word": "contact",
+      "full_form_template": "contact {object}",
+      "is_placeholder": true,
+      "requires_object": true,
+      "rhythmic_pattern": "CON-tact THEM",
+      "difficulty_level": 1,
+      "pill": {
+        "role_hierarchy": "neutral",
+        "speaker_goal": "initiate communication",
+        "interlocutor_goal": "receive information",
+        "participant_structure": "A initiates toward B",
+        "emotional_temperature": "neutral",
+        "temporal_condition": "neutral",
+        "communicative_effect": "signals direct initiation",
+        "status_signal": "procedural"
+      }
+    },
+    {
+      "id": "sense_reach_out",
+      "base_word": "reach out to",
+      "full_form_template": "reach out to {object}",
+      "is_placeholder": false,
+      "requires_object": true,
+      "rhythmic_pattern": "reach OUT to THEM",
+      "difficulty_level": 2,
+      "pill": {
+        "role_hierarchy": "sensitive",
+        "speaker_goal": "initiate softly",
+        "interlocutor_goal": "maintain autonomy",
+        "participant_structure": "A extends toward B",
+        "emotional_temperature": "softened",
+        "temporal_condition": "neutral",
+        "communicative_effect": "reduces imposition",
+        "status_signal": "non-imposing"
+      }
+    },
+    {
+      "id": "sense_chase_up",
+      "base_word": "chase up",
+      "full_form_template": "chase {object} up",
+      "is_placeholder": false,
+      "requires_object": true,
+      "rhythmic_pattern": "chase THEM UP",
+      "difficulty_level": 3,
+      "pill": {
+        "role_hierarchy": "neutral",
+        "speaker_goal": "recover delayed response",
+        "interlocutor_goal": "respond after delay",
+        "participant_structure": "A pursues response from B",
+        "emotional_temperature": "persistent",
+        "temporal_condition": "delayed_response",
+        "communicative_effect": "signals accountability pressure",
+        "status_signal": "firm but professional"
+      }
+    },
+    {
+      "id": "sense_consult",
+      "base_word": "consult",
+      "full_form_template": "consult {object}",
+      "is_placeholder": false,
+      "requires_object": true,
+      "rhythmic_pattern": "con-SULT THEM",
+      "difficulty_level": 3,
+      "pill": {
+        "role_hierarchy": "expertise_acknowledged",
+        "speaker_goal": "validate decision",
+        "interlocutor_goal": "provide expertise",
+        "participant_structure": "A seeks validation from B",
+        "emotional_temperature": "neutral",
+        "temporal_condition": "pre-decision",
+        "communicative_effect": "signals deference to expertise",
+        "status_signal": "strategically respectful"
+      }
+    }
+  ],
+  "stageTemplates": {
+    "stage1": {
+      "options": 2,
+      "distractor": false,
+      "visible_pill": true,
+      "floating_menu": true,
+      "timer_seconds": null
+    },
+    "stage2": {
+      "options": 3,
+      "distractor": true,
+      "visible_pill": false,
+      "floating_menu": false,
+      "timer_seconds": null
+    },
+    "stage3": {
+      "options": 0,
+      "distractor": false,
+      "visible_pill": false,
+      "floating_menu": false,
+      "timer_seconds": 5,
+      "regex_evaluation_examples": {
+        "chase_up": "/chase\\s+(it|them|the proposal)\\s+up/i"
+      }
+    }
+  }
+}

@@ -1,0 +1,253 @@
+{
+  "clusters": [
+    {
+      "id": "cluster_contact",
+      "name": "CONTACT",
+      "description": "Initiating and continuing communication",
+      "senses": [
+        {
+          "id": "contact_placeholder",
+          "base_word": "contact",
+          "full_form_template": "contact {object}",
+          "is_placeholder": true,
+          "requires_object": true,
+          "difficulty_level": 1,
+          "pill": {
+            "speaker_goal": "initiate communication",
+            "participant_structure": "A initiates toward B",
+            "emotional_temperature": "neutral",
+            "temporal_condition": "neutral",
+            "status_signal": "procedural"
+          }
+        },
+        {
+          "id": "reach_out",
+          "base_word": "reach out to",
+          "full_form_template": "reach out to {object}",
+          "is_placeholder": false,
+          "requires_object": true,
+          "difficulty_level": 2,
+          "pill": {
+            "speaker_goal": "initiate softly",
+            "participant_structure": "A extends toward B",
+            "emotional_temperature": "softened",
+            "temporal_condition": "neutral",
+            "status_signal": "non-imposing"
+          }
+        },
+        {
+          "id": "chase_up",
+          "base_word": "chase up",
+          "full_form_template": "chase {object} up",
+          "is_placeholder": false,
+          "requires_object": true,
+          "difficulty_level": 3,
+          "pill": {
+            "speaker_goal": "recover delayed response",
+            "participant_structure": "A pursues B for reply",
+            "emotional_temperature": "persistent",
+            "temporal_condition": "delayed_response",
+            "status_signal": "firm"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "cluster_meet",
+      "name": "MEET",
+      "description": "Encounter vs discovery",
+      "senses": [
+        {
+          "id": "meet_placeholder",
+          "base_word": "meet",
+          "full_form_template": "meet {object}",
+          "is_placeholder": true,
+          "requires_object": true,
+          "difficulty_level": 1,
+          "pill": {
+            "speaker_goal": "engage in mutual interaction",
+            "participant_structure": "reciprocal interaction",
+            "emotional_temperature": "neutral",
+            "temporal_condition": "planned",
+            "status_signal": "direct"
+          }
+        },
+        {
+          "id": "come_across",
+          "base_word": "come across",
+          "full_form_template": "come across {object}",
+          "is_placeholder": false,
+          "requires_object": true,
+          "difficulty_level": 2,
+          "pill": {
+            "speaker_goal": "describe unilateral discovery",
+            "participant_structure": "non-reciprocal encounter",
+            "emotional_temperature": "neutral",
+            "temporal_condition": "accidental",
+            "status_signal": "observational"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "cluster_say",
+      "name": "SAY / ASSERT",
+      "description": "Neutral statement vs strategic assertion",
+      "senses": [
+        {
+          "id": "say_placeholder",
+          "base_word": "say",
+          "full_form_template": "say that {clause}",
+          "is_placeholder": true,
+          "requires_object": false,
+          "difficulty_level": 1,
+          "pill": {
+            "speaker_goal": "state information",
+            "participant_structure": "neutral reporting",
+            "emotional_temperature": "neutral",
+            "temporal_condition": "neutral",
+            "status_signal": "informational"
+          }
+        },
+        {
+          "id": "argue_that",
+          "base_word": "argue that",
+          "full_form_template": "argue that {clause}",
+          "is_placeholder": false,
+          "requires_object": false,
+          "difficulty_level": 3,
+          "pill": {
+            "speaker_goal": "advance defendable claim",
+            "participant_structure": "position-taking",
+            "emotional_temperature": "assertive",
+            "temporal_condition": "analytical",
+            "status_signal": "intellectual authority"
+          }
+        },
+        {
+          "id": "maintain_that",
+          "base_word": "maintain that",
+          "full_form_template": "maintain that {clause}",
+          "is_placeholder": false,
+          "requires_object": false,
+          "difficulty_level": 3,
+          "pill": {
+            "speaker_goal": "sustain prior claim",
+            "participant_structure": "defensive continuity",
+            "emotional_temperature": "controlled",
+            "temporal_condition": "after challenge",
+            "status_signal": "steadfast"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "cluster_help",
+      "name": "HELP",
+      "description": "Support vs enablement vs facilitation",
+      "senses": [
+        {
+          "id": "help_placeholder",
+          "base_word": "help",
+          "full_form_template": "help {object}",
+          "is_placeholder": true,
+          "requires_object": true,
+          "difficulty_level": 1,
+          "pill": {
+            "speaker_goal": "provide assistance",
+            "participant_structure": "A supports B",
+            "emotional_temperature": "neutral",
+            "temporal_condition": "neutral",
+            "status_signal": "supportive"
+          }
+        },
+        {
+          "id": "enable",
+          "base_word": "enable",
+          "full_form_template": "enable {object} to {action}",
+          "is_placeholder": false,
+          "requires_object": true,
+          "difficulty_level": 3,
+          "pill": {
+            "speaker_goal": "remove structural constraint",
+            "participant_structure": "capacity transfer",
+            "emotional_temperature": "strategic",
+            "temporal_condition": "structural",
+            "status_signal": "empowering"
+          }
+        },
+        {
+          "id": "facilitate",
+          "base_word": "facilitate",
+          "full_form_template": "facilitate {process}",
+          "is_placeholder": false,
+          "requires_object": true,
+          "difficulty_level": 3,
+          "pill": {
+            "speaker_goal": "make process smoother",
+            "participant_structure": "process optimization",
+            "emotional_temperature": "neutral",
+            "temporal_condition": "process-oriented",
+            "status_signal": "operational"
+          }
+        }
+      ]
+    },
+
+    {
+      "id": "cluster_delay",
+      "name": "DELAY",
+      "description": "Postpone vs defer vs hold off",
+      "senses": [
+        {
+          "id": "delay_placeholder",
+          "base_word": "delay",
+          "full_form_template": "delay {object}",
+          "is_placeholder": true,
+          "requires_object": true,
+          "difficulty_level": 1,
+          "pill": {
+            "speaker_goal": "move event later",
+            "participant_structure": "schedule shift",
+            "emotional_temperature": "neutral",
+            "temporal_condition": "time adjustment",
+            "status_signal": "procedural"
+          }
+        },
+        {
+          "id": "defer",
+          "base_word": "defer",
+          "full_form_template": "defer {object}",
+          "is_placeholder": false,
+          "requires_object": true,
+          "difficulty_level": 3,
+          "pill": {
+            "speaker_goal": "intentionally postpone decision",
+            "participant_structure": "strategic postponement",
+            "emotional_temperature": "formal",
+            "temporal_condition": "decision pending",
+            "status_signal": "controlled"
+          }
+        },
+        {
+          "id": "hold_off_on",
+          "base_word": "hold off on",
+          "full_form_template": "hold off on {object}",
+          "is_placeholder": false,
+          "requires_object": true,
+          "difficulty_level": 2,
+          "pill": {
+            "speaker_goal": "pause before action",
+            "participant_structure": "temporary suspension",
+            "emotional_temperature": "cautious",
+            "temporal_condition": "uncertain conditions",
+            "status_signal": "measured"
+          }
+        }
+      ]
+    }
+  ]
+}
