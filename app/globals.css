@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,43 +11,188 @@
 }
 
 html {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
 }
 
+/* FluencyFrames Base Setup */
 body {
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
-  color: #1f2937;
+  background-color: #0F1115;
+  color: #F5F7FA;
   min-height: 100vh;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+/* Color utilities */
+.bg-background { background-color: #0F1115; }
+.bg-surface { background-color: #161A20; }
+.bg-muted { background-color: rgba(34, 197, 94, 0.1); }
+.text-foreground { color: #F5F7FA; }
+.text-muted { color: #8A93A5; }
+.border-border { border-color: #242933; }
+
+/* Accent colors */
+.text-precision { color: #3B82F6; }
+.text-strategic { color: #22C55E; }
+.text-caution { color: #F59E0B; }
+.text-authority { color: #8B5CF6; }
+
+.bg-precision-subtle { background-color: rgba(59, 130, 246, 0.1); }
+.border-precision { border-color: #3B82F6; }
+
+/* Typography */
+.text-conversation {
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.text-conversation-lg {
+  font-size: 18px;
+  line-height: 1.6;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.text-replaceable {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.4;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.text-stage-badge {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.text-pill-meta {
+  font-size: 13px;
+  line-height: 1.3;
+  color: #8A93A5;
+  font-family: JetBrains Mono, monospace;
+}
+
+/* Component Styles */
+.message-bubble {
+  background: #161A20;
+  border: 1px solid #242933;
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.response-card {
+  background: #161A20;
+  border: 1px solid #242933;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+}
+
+.response-card:hover {
+  transform: scale(1.02);
+  border-color: #3B82F6;
+  box-shadow: 0 0 12px 4px rgba(59, 130, 246, 0.3);
+}
+
+.response-card.selected {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3B82F6;
+  box-shadow: 0 0 12px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* Stage Badge */
+.stage-badge {
+  display: inline-block;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid #22C55E;
+  color: #22C55E;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Pill Card */
+.pill-card {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.pill-label {
+  font-size: 13px;
+  color: #8A93A5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.pill-value {
+  font-size: 14px;
+  color: #F5F7FA;
+  font-weight: 500;
+}
+
+/* Motion & Animations */
+@keyframes optionGlow {
+  from {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
   }
-  50% {
-    transform: translateY(-8px);
+  to {
+    box-shadow: 0 0 12px 4px rgba(59, 130, 246, 0.3);
   }
 }
 
-.float-effect {
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+@keyframes panelSlide {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
   }
-  50% {
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }
 
-.glow-blue {
-  animation: pulse-glow 2s ease-in-out infinite;
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
-/* glassmorphic container helper */
-.glass {
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
+.animate-option-select {
+  animation: optionGlow 150ms ease-out;
+}
+
+.animate-panel-appear {
+  animation: panelSlide 250ms ease-out;
+}
+
+.animate-timer-pulse {
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161A20;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #242933;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
 }

@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ExerciseCard from "@/components/ExerciseCard";
-import FreeTextExerciseCard from "@/components/FreeTextExerciseCard";
-import ProgressBar from "@/components/ProgressBar";
-import SensesDropdown from "@/components/SensesDropdown";
-import SparkAnimation from "@/components/SparkAnimation";
-import PointsCounter from "@/components/PointsCounter";
+import { LearningInterface } from "@/components/LearningInterface";
 import {
   exerciseSession,
   MultiChoiceExercise,
@@ -16,6 +11,7 @@ import {
 } from "@/data/exercises";
 import { initializeUser, loadExerciseState, saveExerciseState } from "@/data/storage";
 import type { ExerciseState } from "@/data/storage";
+import type { ExerciseViewModel, Message } from "@/data/domain";
 
 export default function Home() {
   const [stageIndex, setStageIndex] = useState(0);
@@ -24,14 +20,8 @@ export default function Home() {
   const [currentSensePill, setCurrentSensePill] = useState<typeof contactSenses["reach-out"] | null>(
     null
   );
-  const [integrationTracker, setIntegrationTracker] = useState<Record<string, number>>({
-    "reach-out": 0,
-    "chase-up": 0,
-    contact: 0,
-    consult: 0,
-  });
-  const [points, setPoints] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [selectedOptionId, setSelectedOptionId] = useState<string>();
 
   // Initialize user and load saved progress on mount
   useEffect(() => {
@@ -69,168 +59,185 @@ export default function Home() {
 
   // Get current stage and exercise
   const currentStage = exerciseSession.stages[stageIndex];
-  const currentExercise = currentStage.exercises[exerciseIndex];
-  const stageNum = currentStage.stage;
+  const currentExercise = currentStage?.exercises[exerciseIndex];
+  const stageNum = currentStage?.stage || 1;
 
   // Check if all stages are complete
   const isComplete = stageIndex >= exerciseSession.stages.length;
 
-  // Derive target sense from current exercise (for Dropdown learning display)
-  const targetSenseId = 
-    currentExercise?.type === "multiChoice" 
-      ? (currentExercise as MultiChoiceExercise).senseId
-      : undefined;
+  // Build ExerciseViewModel from current exercise
+  const buildExerciseViewModel = (): ExerciseViewModel | null => {
+    if (!currentExercise) return null;
 
-  const handlePointsChange = (delta: number) => {
-    setPoints(prev => prev + delta);
+    const exercise = currentExercise as MultiChoiceExercise | FreeTextExercise;
+    const context = "context" in exercise ? exercise.context : undefined;
+
+    // Build messages from context
+    const messages: Message[] = [];
+    if (context?.userRole && context?.interlocutor) {
+      if (context.initialDialogue) {
+        messages.push({
+          id: "system-context",
+          role: "system",
+          content: context.background,
+          roleLabel: "Context",
+        });
+        messages.push({
+          id: "initial-1",
+          role: "interlocutor",
+          content: context.initialDialogue,
+          avatarUrl: context.interlocutorAvatarUrl,
+          roleLabel: context.interlocutor,
+        });
+      } else {
+        messages.push({
+          id: "system-context",
+          role: "system",
+          content: context.background,
+          roleLabel: "Context",
+        });
+        messages.push({
+          id: "user-response",
+          role: "user",
+          content: exercise.type === "multiChoice" ? (exercise as MultiChoiceExercise).placeholder || "..." : "...",
+          avatarUrl: context.userAvatarUrl,
+          roleLabel: context.userRole,
+        });
+      }
+    }
+
+    // Get options for Stage 1 & 2
+    let options = undefined;
+    if (exercise.type === "multiChoice") {
+      const mc = exercise as MultiChoiceExercise;
+      options = mc.options.map((opt, idx) => ({
+        id: `option-${idx}`,
+        clusterId: "contact",
+        baseWord: opt,
+        fullFormTemplate: opt,
+        isPlaceholder: false,
+        requiresObject: true,
+        difficultyLevel: stageNum,
+        createdAt: new Date(),
+        pill: currentSensePill?.pill ? {
+          id: `pill-${idx}`,
+          senseId: `sense-${idx}`,
+          roleHierarchy: currentSensePill?.roleHierarchy || "Peer",
+          speakerGoal: "",
+          interlocutorGoal: "",
+          participantStructure: currentSensePill?.pill || "",
+          emotionalTemperature: "neutral" as const,
+          temporalCondition: "neutral" as const,
+          communicativeEffect: "",
+          statusSignal: currentSensePill?.pill || "",
+          createdAt: new Date(),
+        } : undefined,
+      }));
+    }
+
+    // Get visible pill for Stage 1
+    const visiblePill = currentSensePill?.pill ? {
+      id: "visible-pill",
+      senseId: "sense-1",
+      roleHierarchy: currentSensePill.roleHierarchy || "Peer",
+      speakerGoal: "",
+      interlocutorGoal: "",
+      participantStructure: currentSensePill.pill || "",
+      emotionalTemperature: "neutral" as const,
+      temporalCondition: "neutral" as const,
+      communicativeEffect: "",
+      statusSignal: currentSensePill.pill || "",
+      createdAt: new Date(),
+    } : undefined;
+
+    return {
+      stage: stageNum as 1 | 2 | 3,
+      clusterName: "CONTACT",
+      messages,
+      placeholderSentence: exercise.type === "multiChoice" ? (exercise as MultiChoiceExercise).placeholder || "..." : "...",
+      options,
+      visiblePill: stageNum === 1 ? visiblePill : undefined,
+      timerSeconds: exercise.type === "freeText" ? (exercise as FreeTextExercise).timeSeconds : undefined,
+    };
+  };
+
+  const viewModel = buildExerciseViewModel();
+
+  const handleSelectOption = (senseId: string) => {
+    setSelectedOptionId(senseId);
+    // Handle scoring and progression here
+    handleCorrectAnswered(senseId);
+    setTimeout(() => handleContinue(), 500);
   };
 
   const handleCorrectAnswered = (senseId?: string) => {
-    // Only show sense pill on Stage 1
     if (stageNum === 1 && senseId && contactSenses[senseId]) {
       setUnlockedSenses((prev) => new Set([...prev, senseId]));
       setCurrentSensePill(contactSenses[senseId]);
-      
-      // Increment integration tracker (cap at 12)
-      setIntegrationTracker((prev) => ({
-        ...prev,
-        [senseId]: Math.min((prev[senseId] || 0) + 1, 12),
-      }));
     }
   };
 
   const handleContinue = () => {
-    setCurrentSensePill(null); // Clear sense pill when moving to next exercise
+    setCurrentSensePill(null);
+    setSelectedOptionId(undefined);
     const nextExerciseIndex = exerciseIndex + 1;
 
     if (nextExerciseIndex < currentStage.exercises.length) {
-      // Move to next exercise in current stage
       setExerciseIndex(nextExerciseIndex);
     } else {
-      // Move to next stage
       const nextStageIndex = stageIndex + 1;
       if (nextStageIndex < exerciseSession.stages.length) {
         setStageIndex(nextStageIndex);
         setExerciseIndex(0);
       } else {
-        // All stages complete
         setStageIndex(nextStageIndex);
       }
     }
   };
 
-  const userContext = !isComplete && currentExercise && currentExercise.type === "multiChoice" 
-    ? (currentExercise as MultiChoiceExercise).context
-    : !isComplete && currentExercise && currentExercise.type === "freeText"
-    ? (currentExercise as FreeTextExercise).context
-    : undefined;
+  if (!mounted) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-background text-foreground">
+        <p className="text-muted">Loading...</p>
+      </div>
+    );
+  }
 
-  // derive communication medium for container label
-  const medium = userContext
-    ? userContext.background.toLowerCase().includes("email")
-      ? "Email"
-      : userContext.background.toLowerCase().includes("message")
-      ? "Message"
-      : userContext.background.toLowerCase().includes("face")
-      ? "Face-to-Face"
-      : "Conversation"
-    : "";
-  const userAvatar = userContext?.userAvatarUrl;
-  const interlocutorAvatar = userContext?.interlocutorAvatarUrl;
+  if (isComplete) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-background">
+        <div className="text-center max-w-xl">
+          <h2 className="text-4xl font-bold text-strategic-green mb-4">
+            ✓ Cluster Complete
+          </h2>
+          <p className="text-foreground text-lg">
+            You've achieved mastery of the CONTACT cluster.
+          </p>
+          <p className="text-muted text-sm mt-4">
+            All {totalExercises} exercises completed successfully!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!viewModel) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-background text-foreground">
+        <p className="text-muted">No exercise available</p>
+      </div>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
-      <SparkAnimation />
-      <PointsCounter points={points} />
-      
-      {/* Header - stays at top */}
-      <div className="w-full max-w-5xl mx-auto mb-8">
-        <div className="text-center py-6">
-          <h1 className="text-5xl font-bold text-gray-900 mb-2">
-            Precision Language Training
-          </h1>
-          <p className="text-lg text-gray-600">CONTACT Cluster</p>
-        </div>
-
-        {/* Progress Bar */}
-        {!isComplete && (
-          <div className="mb-4">
-            <ProgressBar current={currentExerciseNum} total={totalExercises} />
-            <p className="text-xs text-gray-500 mt-2 text-center">
-              Exercise {currentExerciseNum} / {totalExercises}
-            </p>
-          </div>
-        )}
-      </div>
-
-      {/* Main Content Container with glassmorphic styling */}
-      {!isComplete && (
-        <div className="w-full max-w-5xl mx-auto bg-white/30 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8 space-y-6">
-          
-          {/* Stage Label & medium header */}
-          <div className="text-center space-y-2">
-            {medium && (
-              <div className="text-xs text-gray-600">
-                {medium} style interaction
-              </div>
-            )}
-            <div>
-              <span className="inline-block px-6 py-2 bg-gradient-to-r from-blue-50 to-blue-100 text-sm font-semibold text-blue-700 rounded-full border border-blue-200">
-                Stage {stageNum}
-              </span>
-            </div>
-          </div>
-
-          {/* Exercise Content */}
-          {currentExercise.type === "multiChoice" ? (
-            <ExerciseCard
-              key={`${stageIndex}-${exerciseIndex}`}
-              exercise={currentExercise as MultiChoiceExercise}
-              stage={stageNum}
-              onContinue={handleContinue}
-              onPointsChange={handlePointsChange}
-              onCorrectAnswered={handleCorrectAnswered}
-              userAvatarUrl={userAvatar}
-              interlocutorAvatarUrl={interlocutorAvatar}
-            />
-          ) : (
-            <FreeTextExerciseCard
-              key={`${stageIndex}-${exerciseIndex}`}
-              exercise={currentExercise as FreeTextExercise}
-              onContinue={handleContinue}
-            />
-          )}
-        </div>
-      )}
-
-      {/* Completion Screen */}
-      {isComplete && (
-        <div className="w-full max-w-5xl mx-auto">
-          <div className="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-2xl p-12 text-center shadow-lg">
-            <h2 className="text-5xl font-bold text-gray-900 mb-4">
-              🎉 Cluster Complete
-            </h2>
-            <p className="text-xl text-gray-700">
-              You've mastered the CONTACT cluster!
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <div className="mt-12 text-center text-gray-500 text-sm">
-        <p>Precision Language Training • Draft 1</p>
-      </div>
-
-      {/* Senses Dropdown - Show throughout Stage 1 with integration tracking */}
-      {!isComplete && stageNum === 1 && (
-        <SensesDropdown 
-          sensePill={currentSensePill} 
-          unlockedSenses={unlockedSenses}
-          targetSenseId={targetSenseId}
-          integrationTracker={integrationTracker}
-        />
-      )}
-    </main>
+    <LearningInterface
+      exercise={viewModel}
+      onSelectOption={handleSelectOption}
+      selectedOptionId={selectedOptionId}
+      score={85}
+      currentExercise={currentExerciseNum}
+      totalExercises={totalExercises}
+    />
   );
 }
+

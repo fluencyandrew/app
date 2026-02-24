@@ -21,25 +21,40 @@ export type TemperatureLevel = "neutral" | "softened" | "urgent";
 export type TemporalCondition = "neutral" | "delayed_response" | "preemptive";
 
 // ============================================
+// MESSAGE (Conversation rendering)
+// ============================================
+
+export interface Message {
+  id: string;
+  role: "user" | "interlocutor" | "system";
+  content: string;
+  avatarUrl?: string;
+  roleLabel?: string;
+}
+
+// ============================================
 // SENSE (Placeholder + Variants)
 // ============================================
 
 export interface Sense {
   id: string; // e.g., "reach-out", "chase-up", "contact"
-  cluster_id: string;
+  clusterId: string;
   
   // Core definition
-  base_word: string; // e.g., "contact", "reach out", "chase up"
-  full_form_template: string; // e.g., "reach out to {object}"
-  is_placeholder: boolean; // true only for base/neutral variant
+  baseWord: string; // e.g., "contact", "reach out", "chase up"
+  fullFormTemplate: string; // e.g., "reach out to {object}"
+  isPlaceholder: boolean; // true only for base/neutral variant
   
   // Linguistic features
-  requires_object: boolean; // Does it need direct object?
-  rhythmic_pattern?: string; // e.g., "chase THEM up" (syllable stress)
-  difficulty_level: number; // 1-5
+  requiresObject: boolean; // Does it need direct object?
+  rhythmicPattern?: string; // e.g., "chase THEM up" (syllable stress)
+  difficultyLevel: number; // 1-5
   
   // Metadata
-  created_at: Date;
+  createdAt: Date;
+  
+  // Pill association (optional)
+  pill?: Pill;
 }
 
 // ============================================
@@ -48,23 +63,23 @@ export interface Sense {
 
 export interface Pill {
   id: string;
-  sense_id: string; // 1:1 mapping - each sense has one pill
+  senseId: string; // 1:1 mapping - each sense has one pill
   
   // Situational context
-  role_hierarchy: string; // e.g., "Peer initiation", "Accountability pressure"
-  speaker_goal: string; // e.g., "Reopen communication without urgency"
-  interlocutor_goal: string; // e.g., "Maintain autonomy"
-  participant_structure: string; // e.g., "1-to-1 external", "team async"
+  roleHierarchy: string; // e.g., "Peer initiation", "Accountability pressure"
+  speakerGoal: string; // e.g., "Reopen communication without urgency"
+  interlocutorGoal: string; // e.g., "Maintain autonomy"
+  participantStructure: string; // e.g., "1-to-1 external", "team async"
   
   // Psychological features
-  emotional_temperature: TemperatureLevel; // neutral | softened | urgent
-  temporal_condition: TemporalCondition; // neutral | delayed_response | preemptive
+  emotionalTemperature: TemperatureLevel; // neutral | softened | urgent
+  temporalCondition: TemporalCondition; // neutral | delayed_response | preemptive
   
   // Communication outcome
-  communicative_effect: string; // "Non-imposing, relationship-aware"
-  status_signal: string; // "Warm opening" or "Accountable follow-up"
+  communicativeEffect: string; // "Non-imposing, relationship-aware"
+  statusSignal: string; // "Warm opening" or "Accountable follow-up"
   
-  created_at: Date;
+  createdAt: Date;
 }
 
 // ============================================
@@ -79,12 +94,12 @@ export interface Cluster {
   // All senses in this cluster (includes placeholder)
   senses: Sense[];
   
-  // Map sense_id -> pill
+  // Map senseId -> pill
   pills: Record<string, Pill>; // e.g., { "reach-out": {...}, "chase-up": {...} }
   
-  base_placeholder_sense_id: string; // The neutral/fluent baseline
+  basePlaceholderSenseId: string; // The neutral/fluent baseline
   
-  created_at: Date;
+  createdAt: Date;
 }
 
 // ============================================
@@ -93,11 +108,11 @@ export interface Cluster {
 
 export interface ExerciseOption {
   id: string;
-  exercise_id: string;
-  sense_id: string; // Which sense does this option represent?
-  display_text: string; // Full replacement unit (what user sees)
-  is_correct: boolean;
-  is_distractor?: boolean; // Stage 2 only: marks unrelated option
+  exerciseId: string;
+  senseId: string; // Which sense does this option represent?
+  displayText: string; // Full replacement unit (what user sees)
+  isCorrect: boolean;
+  isDistractor?: boolean; // Stage 2 only: marks unrelated option
 }
 
 // ============================================
@@ -106,42 +121,42 @@ export interface ExerciseOption {
 
 export interface Exercise {
   id: string;
-  cluster_id: string;
+  clusterId: string;
   
   // Metadata
   stage: Stage; // 1, 2, or 3
-  exercise_type: ExerciseType; // contrast | constraint | override | production
+  exerciseType: ExerciseType; // contrast | constraint | override | production
   
   // Scenario / Context
-  prompt_text: string; // Fill-in-the-blank: "I'd like to ______ regarding..."
-  background_context: string; // "Email sent last month about non-urgent proposal..."
-  user_role: string; // e.g., "Project Manager"
-  interlocutor_role: string; // e.g., "External Consultant"
+  promptText: string; // Fill-in-the-blank: "I'd like to ______ regarding..."
+  backgroundContext: string; // "Email sent last month about non-urgent proposal..."
+  userRole: string; // e.g., "Project Manager"
+  interlocutorRole: string; // e.g., "External Consultant"
   
   // Stage 1 & 2: Multiple choice
   options?: ExerciseOption[]; // Only for stages 1 & 2
-  visible_pill_id?: string; // Stage 1 only: show this pill
+  visiblePillId?: string; // Stage 1 only: show this pill
   
   // Stage 3: Free text
-  timer_seconds?: number; // e.g., 5
-  required_words?: string[]; // e.g., ["chase", "up"]
-  regex_pattern?: string; // e.g., /chase\s+(it|them)\s+up/i
+  timerSeconds?: number; // e.g., 5
+  requiredWords?: string[]; // e.g., ["chase", "up"]
+  regexPattern?: string; // e.g., /chase\s+(it|them)\s+up/i
   
   // Feedback
   feedback: {
     correct: {
-      interlocutor_reaction: string;
+      interlocutorReaction: string;
       alignment: string;
       signal: string;
     };
     incorrect: {
-      interlocutor_reaction: string;
+      interlocutorReaction: string;
       alignment: string;
       signal: string;
     };
   };
   
-  created_at: Date;
+  createdAt: Date;
 }
 
 // ============================================
@@ -226,4 +241,18 @@ export interface User {
   email?: string;
   role_profile?: "corporate" | "academic" | "founder" | "student";
   created_at: Date;
+}
+
+// ============================================
+// EXERCISE VIEW MODEL (Presentation Layer)
+// ============================================
+
+export interface ExerciseViewModel {
+  stage: Stage;
+  clusterName: string;
+  messages: Message[];
+  placeholderSentence: string;
+  options?: Sense[];
+  visiblePill?: Pill;
+  timerSeconds?: number;
 }
