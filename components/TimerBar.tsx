@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Clock } from "lucide-react";
 
 interface TimerBarProps {
   seconds?: number;
@@ -33,27 +36,32 @@ export function TimerBar({ seconds = 60, onTimeUp }: TimerBarProps) {
   const isLowTime = remaining < 10;
 
   return (
-    <div className={`space-y-3 ${isLowTime ? "animate-timer-pulse" : ""}`}>
-      <div className="flex justify-between items-center">
-        <span className="text-pill-meta uppercase">Time</span>
-        <span
-          className={`text-conversation font-semibold ${
-            isLowTime ? "text-caution-amber" : "text-precision-blue"
-          }`}
-        >
-          {remaining}s
-        </span>
-      </div>
-      <div className="w-full h-2 bg-surface rounded-full overflow-hidden border border-border">
-        <div
-          className={`h-full transition-all duration-300 ${
-            isLowTime
-              ? "bg-caution-amber"
-              : "bg-gradient-to-r from-precision-blue to-strategic-green"
-          }`}
-          style={{ width: `${percentage}%` }}
+    <Card
+      className={`card-elevated border-border/50 bg-card/80 card-elevated-hover transition-all duration-200 ${
+        isLowTime ? "border-caution-amber/60 bg-caution-amber/5" : ""
+      }`}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="section-label">Time Remaining</CardTitle>
+          </div>
+          <span
+            className={`text-lg font-bold tabular-nums transition-colors duration-200 ${
+              isLowTime ? "text-caution-amber animate-pulse-subtle" : "text-precision-blue"
+            }`}
+          >
+            {remaining}s
+          </span>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Progress
+          value={percentage}
+          className={`h-2.5 ${isLowTime ? "opacity-100" : ""}`}
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

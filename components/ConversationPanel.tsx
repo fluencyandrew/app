@@ -16,8 +16,11 @@ export function ConversationPanel({
   selectedOptionId,
 }: ConversationPanelProps) {
   return (
-    <div className="w-[70%] border-r border-border flex flex-col bg-background">
+    <div className="conversation-container">
+      {/* Conversation Thread - Scrollable */}
       <ConversationThread messages={exercise.messages} />
+
+      {/* Response Options - Fixed at bottom */}
       {exercise.options && exercise.options.length > 0 && (
         <ResponseOptions
           options={exercise.options}

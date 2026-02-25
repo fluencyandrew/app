@@ -1,23 +1,39 @@
 "use client";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+
 interface ScoreCardProps {
   score?: number;
+  total?: number;
 }
 
-export function ScoreCard({ score = 85 }: ScoreCardProps) {
+export function ScoreCard({ score = 85, total = 100 }: ScoreCardProps) {
+  const percentage = (score / total) * 100;
+
+  // Determine color based on score
+  const getScoreColor = (s: number) => {
+    if (s >= 85) return "text-strategic-green";
+    if (s >= 70) return "text-precision-blue";
+    return "text-caution-amber";
+  };
+
   return (
-    <div className="bg-surface border border-border rounded-lg p-bubble-pad space-y-3">
-      <div className="flex justify-between items-center">
-        <span className="text-pill-meta uppercase">Score</span>
-        <span className="text-2xl font-bold text-strategic-green">{score}</span>
-      </div>
-      <div className="text-xs text-muted">Integration Index: {score}%</div>
-      <div className="w-full h-1.5 bg-surface rounded-full overflow-hidden border border-border">
-        <div
-          className="h-full bg-gradient-to-r from-strategic-green to-precision-blue"
-          style={{ width: `${score}%` }}
-        />
-      </div>
-    </div>
+    <Card className="card-elevated border-border/50 bg-card/80 card-elevated-hover">
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-center">
+          <CardTitle className="section-label">Score</CardTitle>
+          <span className={`text-2xl font-bold ${getScoreColor(score)}`}>
+            {score}
+          </span>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <Progress value={percentage} className="h-2.5" />
+        <p className="text-xs text-muted-foreground/70">
+          Integration Index: <span className="font-semibold text-foreground">{Math.round(percentage)}%</span>
+        </p>
+      </CardContent>
+    </Card>
   );
 }
